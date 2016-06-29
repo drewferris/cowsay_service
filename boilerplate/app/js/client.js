@@ -1,4 +1,4 @@
 const angular = require('angular');
 
-var FirstApp = angular.module('FirstApp', []);
-require('./first')(FirstApp);
+var app = angular.module('VacaApp', []);
+require('./cows')(app);

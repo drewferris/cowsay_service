@@ -5,15 +5,16 @@
     <meta charset="utf-8">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>First App</title>
+    <title>Vaca App</title>
     <link rel="stylesheet" href="app.css">
 </head>
 
-<body data-ng-app="FirstApp">
+<body ng-app="VacaApp">
 
-    <main ng-cloak>
+    <main ng-cloak ng-controller="VacaController as vacactrl">
 
-      <first-directive></first-directive>
+      <pre>{{vacactrl.vaca}</pre>
+      <vaca-note file="koala"></vaca-note>
 
 
 
