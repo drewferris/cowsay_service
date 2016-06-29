@@ -1,66 +1,32 @@
-'use strict';
 const gulp = require('gulp');
+const del = require('del');
 const webpack = require('webpack-stream');
-const notify = require('gulp-notify');
-const plumber = require('gulp-plumber');
 
-var paths = {
-  dev: {
-    css: 'app/css/**/*.css',
-    html: 'app/**/*.html',
-    js: 'app/js/**/*.js',
-    test: 'test/*_test.js'
-  },
-  build: {
-    main: 'build/',
-    css: 'build/css',
-    js: 'build/js',
-    test: 'test/'
-  }
+const paths = {
+  html: './app/**/*.html',
+  js: './app/js/client.js',
+  tests: './test/controller_test.js'
 };
 
-gulp.task('watch', function () {
-  gulp.watch(paths.dev.html, ['statichtmlfiles:dev']);
-  gulp.watch(paths.dev.js, ['bundle']);
-  gulp.watch(paths.dev.css, ['staticcssfiles:dev']);
-  gulp.watch(paths.dev.test, ['bundle:test']);
+gulp.task('bundle', ['clean'], () => {
+  return gulp.src(paths.js)
+    .pipe(webpack({output:{filename: 'bundle.js'}}))
+    .pipe(gulp.dest('build'));
 });
 
-gulp.task('statichtmlfiles:dev', () => {
-  return gulp.src(paths.dev.html)
-    .pipe(gulp.dest(paths.build.main));
+gulp.task('clean', () => {
+  return del('./build/**/*');
 });
 
-gulp.task('staticcssfiles:dev', () => {
-  return gulp.src(paths.dev.css)
-    .pipe(gulp.dest(paths.build.main));
-});
-
-
-gulp.task('bundle', () => {
-  return gulp.src(__dirname + '/app/js/client.js')
-    .pipe(plumber({
-      errorHandler: notify.onError('Error: <%= error.message %>')
-    }))
-    .pipe(webpack({
-      output: {
-        filename: 'bundle.js'
-      }
-    }))
-    .pipe(gulp.dest(paths.build.main));
+gulp.task('copy', ['clean'],() => {
+  return gulp.src(paths.html)
+    .pipe(gulp.dest('./build'));
 });
 
 gulp.task('bundle:test', () => {
-  return gulp.src(paths.dev.test)
-  .pipe(plumber({
-    errorHandler: notify.onError('Error: <%= error.message %>')
-  }))
-    .pipe(webpack({
-      output: {
-        filename: 'test_bundle.js'
-      }
-    }))
-    .pipe(gulp.dest(paths.build.test));
+  return gulp.src(paths.tests)
+    .pipe(webpack({output:{filename: 'test_bundle.js'}}))
+    .pipe(gulp.dest('./test'));
 });
 
-gulp.task('default', ['bundle', 'statichtmlfiles:dev', 'staticcssfiles:dev']);
+gulp.task('default', ['bundle', 'clean', 'copy']);

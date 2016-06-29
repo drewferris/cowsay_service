@@ -1,3 +1,3 @@
 module.exports = function(app) {
-  require('./VacaController')(app);
+  require('./vaca_controller')(app);
 };
